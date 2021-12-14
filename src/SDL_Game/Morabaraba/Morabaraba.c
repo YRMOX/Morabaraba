@@ -140,7 +140,9 @@ Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber)
     }
     SetAllNeighbor(temp);
     temp->mills = malloc(sizeof(Mill*)*MAX_MILL);
-    for(int i=0; i<MAX_MILL; i++) temp->mills[i] = CreateMill();
+    for(int i=0; i<MAX_MILL; i++){
+        temp->mills[i] = CreateMill();
+    }
     temp->players = malloc(sizeof(Player*)*playerNumber);
     for(int i=0; i<playerNumber; i++) temp->players[i] = CreatePlayer(i+1);
     temp->actualPlayer = 1;
@@ -226,26 +228,36 @@ void SDL_DrawMill(Morabaraba* morabaraba, Mill* mill){
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
     for(int i=0; i<MILLSIZE; i++){
-        int x = renderW/morabaraba->size*mill->frames[i]->x+renderW/(2*morabaraba->size);
-        int y = renderH/morabaraba->size*mill->frames[i]->y+renderH/(2*morabaraba->size);
-        SDL_SetRenderDrawColor(morabaraba->renderer, 255, 0, 0, 255);
-        SDL_RenderFillCircle(morabaraba->renderer, x, y, 0.25);
+        if(mill->frames[i] != NULL){
+            int x = renderW/morabaraba->size*mill->frames[i]->x+renderW/(2*morabaraba->size);
+            int y = renderH/morabaraba->size*mill->frames[i]->y+renderH/(2*morabaraba->size);
+            SDL_SetRenderDrawColor(morabaraba->renderer, 255, 0, 0, 255);
+            SDL_RenderFillCircle(morabaraba->renderer, x, y, 0.25);
+        }
     }
 }
 
 void SDL_DrawAllMill(Morabaraba* morabaraba){
     for(int i=0; i<MAX_MILL; i++){
         if(morabaraba->mills[i] != NULL){
-            printf("test");
             SDL_DrawMill(morabaraba, morabaraba->mills[i]);
         }
     }
 }
 
+int IndexInMills(Mill* mill, Mill** mills){
+    int temp = -1;
+    for(int i=0; i<MAX_MILL; i++){
+        if(CmpMill(mills[i], mill)){
+            temp = i;
+        }
+    }
+    return temp;
+}
+
 void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked){
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
-    for(int i=0; i<MAX_MILL; i++) morabaraba->mills[i] = NULL;
     SDL_UpdateAllFrame(morabaraba, mouse);
     for(int j=0; j<morabaraba->size; j++){
         for(int i=0; i<morabaraba->size; i++){
@@ -275,14 +287,18 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                         }
                     }
                 }
-                for(int k=0; k<MAX_MILL; k++){
-                    Mill* temp = SearchMill(morabaraba->array[i][j]);
-                    if(temp != NULL){
-                        if(CmpMill(morabaraba->mills[k], temp)){
-                            CopyMill(morabaraba->mills[k], temp);
-                        }
-                        FreeMill(temp);
+                Mill* mill = SearchMill(morabaraba->array[i][j]);
+                if(mill != NULL){
+                    int k = IndexInMills(mill, morabaraba->mills);
+                    if(k != -1){
+                        CopyMill(morabaraba->mills[k], mill);
+                    }else{
+                        int l = 0;
+                        while((l<MAX_MILL)&&(morabaraba->mills[l]->frames[0] != NULL)) l++;
+                        printf("%i", l);
+                        CopyMill(morabaraba->mills[l], mill); 
                     }
+                    FreeMill(mill);
                 }
             }
         }
