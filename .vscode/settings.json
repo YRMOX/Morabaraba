@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "morabaraba_save.h": "c",
+        "morabaraba.h": "c",
+        "morabaraba_frame.h": "c",
+        "morabaraba_sdl.h": "c",
+        "sdl.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}

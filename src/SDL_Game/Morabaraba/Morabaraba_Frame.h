@@ -20,6 +20,7 @@ struct Frame{
 };
 
 Frame* CreateFrame(Morabaraba* morabaraba, int x, int y);
+int IndexInFrames(Frame* frame, Frame** frames);
 void FreeFrame(Frame* frame);
 
 //Neighbor

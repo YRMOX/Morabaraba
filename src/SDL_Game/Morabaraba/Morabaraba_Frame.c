@@ -21,6 +21,16 @@ Frame* CreateFrame(Morabaraba* morabaraba, int x, int y){
     return temp_frame;
 }
 
+int IndexInFrames(Frame* frame, Frame** frames){
+    int temp = -1;
+    for(int i=0; i<MILLSIZE; i++){
+        if(frames[i]==frame){
+            temp = i;
+        }
+    }
+    return temp;
+}
+
 void FreeFrame(Frame* frame){
     free(frame->neighbor);
     free(frame);

@@ -245,10 +245,10 @@ void SDL_DrawAllMill(Morabaraba* morabaraba){
     }
 }
 
-int IndexInMills(Mill* mill, Mill** mills){
+int IndexFrameInMills(Frame* frame, Mill** mills){
     int temp = -1;
     for(int i=0; i<MAX_MILL; i++){
-        if(CmpMill(mills[i], mill)){
+        if(IndexInFrames(frame, mills[i]->frames)!=-1){
             temp = i;
         }
     }
@@ -280,9 +280,11 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                     if(mouse->click != SDL_BUTTON_LMASK){
                         int x = mouse->x/(renderW/7), y = mouse->y/(renderH/7);
                         morabaraba->array[i][j]->isMoving = false;
-                        if(morabaraba->array[x][y]->value == 0){
-                            if(MoveCow(morabaraba, i, j, x, y)){
-                                SwitchPlayer(morabaraba);
+                        if(morabaraba->array[x][y] != NULL){
+                            if(morabaraba->array[x][y]->value == 0){
+                                if(MoveCow(morabaraba, i, j, x, y)){
+                                    SwitchPlayer(morabaraba);
+                                }
                             }
                         }
                     }
@@ -296,9 +298,17 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                         int l = 0;
                         while((l<MAX_MILL)&&(morabaraba->mills[l]->frames[0] != NULL)) l++;
                         printf("%i", l);
-                        CopyMill(morabaraba->mills[l], mill); 
+                        CopyMill(morabaraba->mills[l], mill);
                     }
                     FreeMill(mill);
+                }else{
+                    for(int k=0; k<MAX_MILL; k++){
+                        if(!CheckMill(morabaraba->mills[k])){
+                            for(int l=0; l<MILLSIZE; l++){
+                                morabaraba->mills[k]->frames[l]=NULL;
+                            }
+                        }
+                    }
                 }
             }
         }

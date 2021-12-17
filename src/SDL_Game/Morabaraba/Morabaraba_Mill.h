@@ -13,10 +13,11 @@ struct Mill{
 
 Mill* CreateMill();
 Mill* SearchMill(Frame* middle);
+bool CheckMill(Mill* mill);
 void CopyMill(Mill* millA, Mill* millB);
 bool CmpMill(Mill* millA, Mill* millB);
 void FreeMill(Mill* mill);
 
-bool isInMills(Mill* mill, Mill** mills);
+int IndexInMills(Mill* mill, Mill** mills);
 
 #endif

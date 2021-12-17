@@ -4,7 +4,7 @@
 Mill* CreateMill(){
     Mill* temp = malloc(sizeof(Mill));
     temp->frames = malloc(sizeof(Frame*)*MILLSIZE);
-    for(int i=0; i<MILLSIZE; i++) temp->frames = NULL;
+    for(int i=0; i<MILLSIZE; i++) temp->frames[i] = NULL;
     return temp;
 }
 
@@ -33,6 +33,18 @@ Mill* SearchMill(Frame* middle){
     return NULL;
 }
 
+bool CheckMill(Mill* mill){
+    bool temp = true;
+    for(int i=1; i<MILLSIZE; i++){
+        if((mill->frames[i-1]!=NULL)||(mill->frames[i]!=NULL)){
+            if(mill->frames[i-1]->value!=mill->frames[i]->value){
+                temp = false;
+            }
+        }
+    }
+    return temp;
+}
+
 void CopyMill(Mill* millA, Mill* millB){
     for(int i=0; i<MILLSIZE; i++){
         millA->frames[i] = millB->frames[i];
@@ -52,4 +64,14 @@ bool CmpMill(Mill* millA, Mill* millB){
 void FreeMill(Mill* mill){
     free(mill->frames);
     free(mill);
+}
+
+int IndexInMills(Mill* mill, Mill** mills){
+    int temp = -1;
+    for(int i=0; i<MAX_MILL; i++){
+        if(CmpMill(mills[i], mill)){
+            temp = i;
+        }
+    }
+    return temp;
 }
