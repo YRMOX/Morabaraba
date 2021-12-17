@@ -28,7 +28,7 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
 Morabaraba* CreateMorabaraba(int size, int playerNumber); // à faire
 #endif
 
-bool MoveCow(Morabaraba* morabaraba, int x1, int y1, int x2, int y2);
+bool MoveCow(Morabaraba* morabaraba, int x1, int y1, int x2, int y2, bool flying);
 bool SetCow(Morabaraba* morabaraba,int x, int y);
 void PrintMorabaraba(Morabaraba* morabaraba);
 void FreeMorabaraba(Morabaraba* morabaraba);

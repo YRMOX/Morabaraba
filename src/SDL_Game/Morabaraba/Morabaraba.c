@@ -149,11 +149,11 @@ Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber)
     return temp;
 }
 
-bool MoveCow(Morabaraba* morabaraba, int x1, int y1, int x2, int y2){
+bool MoveCow(Morabaraba* morabaraba, int x1, int y1, int x2, int y2, bool flying){
     if((x1 == x2) && (y1 == y2)){
         return false;
     }
-    if(IsInNeighbor(x2, y2, morabaraba->array[x1][y1])){
+    if(IsInNeighbor(x2, y2, morabaraba->array[x1][y1])||flying){
         morabaraba->array[x2][y2]->value = morabaraba->array[x1][y1]->value;
         morabaraba->array[x1][y1]->value = 0;
         return true;
@@ -246,8 +246,8 @@ void SDL_DrawAllMill(Morabaraba* morabaraba){
 }
 
 void KillCow(Morabaraba* morabaraba, int x, int y){
+    morabaraba->players[morabaraba->array[x][y]->value-1]->cowTotalNumber--;
     morabaraba->array[x][y]->value = 0;
-    morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber--;
     morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
 }
 
@@ -284,8 +284,10 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                                     SwitchPlayer(morabaraba);
                                 }
                             }else{
-                                if(PlayerIsOwner(morabaraba->array[i][j], morabaraba->actualPlayer)){
-                                    morabaraba->array[i][j]->isMoving = true;
+                                if(morabaraba->players[morabaraba->actualPlayer-1]->cowInHand==0){
+                                    if(PlayerIsOwner(morabaraba->array[i][j], morabaraba->actualPlayer)){
+                                        morabaraba->array[i][j]->isMoving = true;
+                                    }
                                 }
                             }
                         }
@@ -297,7 +299,9 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                         morabaraba->array[i][j]->isMoving = false;
                         if(morabaraba->array[x][y] != NULL){
                             if(morabaraba->array[x][y]->value == 0){
-                                if(MoveCow(morabaraba, i, j, x, y)){
+                                bool flying = morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber<=3;
+                                printf("%i", morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber);
+                                if(MoveCow(morabaraba, i, j, x, y, flying)){
                                     SwitchPlayer(morabaraba);
                                 }
                             }
