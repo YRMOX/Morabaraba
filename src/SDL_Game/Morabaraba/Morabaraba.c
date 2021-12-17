@@ -245,6 +245,12 @@ void SDL_DrawAllMill(Morabaraba* morabaraba){
     }
 }
 
+void KillCow(Morabaraba* morabaraba, int x, int y){
+    morabaraba->array[x][y]->value = 0;
+    morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber--;
+    morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
+}
+
 int IndexFrameInMills(Frame* frame, Mill** mills){
     int temp = -1;
     for(int i=0; i<MAX_MILL; i++){
@@ -264,14 +270,23 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
             if(morabaraba->array[i][j] != NULL){
                 if(!clicked){
                     if(morabaraba->array[i][j]->isSelected){
-                        if(morabaraba->array[i][j]->value == 0){
-                            if(SetCow(morabaraba, i, j)){
-                                morabaraba->players[morabaraba->actualPlayer-1]->cowInHand--;
-                                SwitchPlayer(morabaraba);
+                        if(morabaraba->players[morabaraba->actualPlayer-1]->isKiller){
+                            if(!PlayerIsOwner(morabaraba->array[i][j], morabaraba->actualPlayer)){
+                                if(morabaraba->array[i][j]->value != 0){
+                                    KillCow(morabaraba, i, j);
+                                    SwitchPlayer(morabaraba);
+                                }
                             }
                         }else{
-                            if(PlayerIsOwner(morabaraba->array[i][j], morabaraba->actualPlayer)){
-                                morabaraba->array[i][j]->isMoving = true;
+                            if(morabaraba->array[i][j]->value == 0){
+                                if(SetCow(morabaraba, i, j)){
+                                    morabaraba->players[morabaraba->actualPlayer-1]->cowInHand--;
+                                    SwitchPlayer(morabaraba);
+                                }
+                            }else{
+                                if(PlayerIsOwner(morabaraba->array[i][j], morabaraba->actualPlayer)){
+                                    morabaraba->array[i][j]->isMoving = true;
+                                }
                             }
                         }
                     }
@@ -297,8 +312,9 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                     }else{
                         int l = 0;
                         while((l<MAX_MILL)&&(morabaraba->mills[l]->frames[0] != NULL)) l++;
-                        printf("%i", l);
                         CopyMill(morabaraba->mills[l], mill);
+                        morabaraba->actualPlayer = morabaraba->array[i][j]->value;
+                        morabaraba->players[morabaraba->actualPlayer-1]->isKiller = true;
                     }
                     FreeMill(mill);
                 }else{
