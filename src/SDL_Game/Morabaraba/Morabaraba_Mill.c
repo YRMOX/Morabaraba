@@ -3,8 +3,7 @@
 
 Mill* CreateMill(){
     Mill* temp = malloc(sizeof(Mill));
-    temp->frames = malloc(sizeof(Frame*)*MILLSIZE);
-    for(int i=0; i<MILLSIZE; i++) temp->frames[i] = NULL;
+    temp->frames = CreateFrames(MILLSIZE);
     return temp;
 }
 
@@ -66,6 +65,12 @@ void FreeMill(Mill* mill){
     free(mill);
 }
 
+Mill** CreateMills(int size){
+    Mill** mills = malloc(sizeof(Mill*)*size);
+    for(int i=0; i<size; i++) mills[i] = CreateMill();
+    return mills;
+}
+
 int IndexInMills(Mill* mill, Mill** mills){
     int temp = -1;
     for(int i=0; i<MAX_MILL; i++){
@@ -74,4 +79,9 @@ int IndexInMills(Mill* mill, Mill** mills){
         }
     }
     return temp;
+}
+
+void FreeMills(Mill** mills, int size){
+    for(int i=0; i<size; i++) FreeMill(mills[i]);
+    free(mills);
 }

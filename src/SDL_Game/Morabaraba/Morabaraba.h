@@ -12,9 +12,12 @@ typedef struct Morabaraba Morabaraba;
 
 struct Morabaraba{
     int size;
+    int playerNumber;
+    int actualPlayer;
+    int countDown;
+    int winner;
     Frame*** array;
     Mill** mills;
-    int actualPlayer;
     Player** players;
     #ifdef MORABARABA_SDL_H
     SDL_Renderer* renderer;

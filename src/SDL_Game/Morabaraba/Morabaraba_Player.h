@@ -11,5 +11,11 @@ struct Player{
 };
 
 Player* CreatePlayer(int id);
+bool PlayerIsOwner(int value, Player* player);
+void FreePlayer(Player* player);
+
+Player** CreatePlayers(int playerNumber);
+void SwitchPlayer(int* actualPlayer, int playerNumber);
+void FreePlayers(Player** players, int playerNumber);
 
 #endif

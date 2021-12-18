@@ -21,6 +21,38 @@ Frame* CreateFrame(Morabaraba* morabaraba, int x, int y){
     return temp_frame;
 }
 
+void FreeFrame(Frame* frame){
+    free(frame->neighbor);
+    free(frame);
+}
+
+Frame** CreateFrames(int size){
+    Frame** frames = malloc(sizeof(Frame*)*size);
+    for(int i=0; i<size; i++) frames[i] = NULL;
+    return frames;
+}
+
+void FreeFrames(Frame** frames, int size){
+    for(int i=0; i<size; i++) FreeFrame(frames[i]);
+    free(frames);
+}
+
+Frame*** CreateFrameArray(Morabaraba* morabaraba, int size){
+    Frame*** array = malloc(sizeof(Frame**)*size);
+    for(int i=0; i<size; i++){
+        array[i] = malloc(sizeof(Frame*)*size);
+        for(int j=0; j<size; j++){
+            array[i][j] = NULL;
+        }
+    }
+    return array;
+}
+
+void FreeFrameArray(Frame*** array, int size){
+    for(int i=0; i<size; i++) FreeFrames(array[i], size);
+    free(array);
+}
+
 int IndexInFrames(Frame* frame, Frame** frames){
     int temp = -1;
     for(int i=0; i<MILLSIZE; i++){
@@ -29,11 +61,6 @@ int IndexInFrames(Frame* frame, Frame** frames){
         }
     }
     return temp;
-}
-
-void FreeFrame(Frame* frame){
-    free(frame->neighbor);
-    free(frame);
 }
 
 void PrintNeighbor(Frame* frame){

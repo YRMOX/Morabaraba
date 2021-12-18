@@ -18,6 +18,8 @@ void CopyMill(Mill* millA, Mill* millB);
 bool CmpMill(Mill* millA, Mill* millB);
 void FreeMill(Mill* mill);
 
+Mill** CreateMills(int size);
 int IndexInMills(Mill* mill, Mill** mills);
+void FreeMills(Mill** mills, int size);
 
 #endif

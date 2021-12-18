@@ -23,6 +23,12 @@ Frame* CreateFrame(Morabaraba* morabaraba, int x, int y);
 int IndexInFrames(Frame* frame, Frame** frames);
 void FreeFrame(Frame* frame);
 
+Frame** CreateFrames(int size);
+void FreeFrames(Frame** frames, int size);
+
+Frame*** CreateFrameArray(Morabaraba* morabaraba, int size);
+void FreeFrameArray(Frame*** array, int size);
+
 //Neighbor
 void PrintNeighbor(Frame* frame);
 void AppendNeighbor(Frame* frame, Frame* frameToAppend);
