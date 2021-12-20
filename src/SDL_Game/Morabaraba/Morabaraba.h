@@ -6,6 +6,7 @@ typedef struct Morabaraba Morabaraba;
 #include "Morabaraba_Frame.h"
 #include "Morabaraba_Mill.h"
 #include "Morabaraba_SDL.h"
+#include "Morabaraba_Gui.h"
 #include <stdbool.h>
 
 #define MAX_MILL 20
@@ -22,6 +23,7 @@ struct Morabaraba{
     #ifdef MORABARABA_SDL_H
     SDL_Rect gridRect;
     SDL_Rect guiRect;
+    Gui* gui;
     SDL_Renderer* renderer;
     #endif
 };

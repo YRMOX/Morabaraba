@@ -8,15 +8,30 @@ void SDL_UpdateMouse(SDL_Mouse* mouse){
 
 SDL_Text* SDL_CreateText(SDL_Renderer *renderer, int x, int y, TTF_Font *font, char* text, SDL_Color color){
     SDL_Text* temp_text = malloc(sizeof(SDL_Text));
+    temp_text->text = text;
+    temp_text->font = font;
+    temp_text->color = color;
     temp_text->surface = TTF_RenderText_Solid(font, text, color);
     temp_text->texture = SDL_CreateTextureFromSurface(renderer, temp_text->surface);
     int x2, y2;
     SDL_QueryTexture(temp_text->texture, NULL, NULL, &x2, &y2);
     temp_text->rect.x = x;
     temp_text->rect.y = y;
-    temp_text->rect.w = x2/20;
-    temp_text->rect.h = y2/20;
+    temp_text->rect.w = x2;
+    temp_text->rect.h = y2;
     return temp_text;
+}
+
+void SDL_UpdateText(SDL_Renderer *renderer, SDL_Text* text, int x, int y){
+    text->surface = TTF_RenderText_Solid(text->font, text->text, text->color);
+    text->texture = SDL_CreateTextureFromSurface(renderer, text->surface);
+    int x2, y2;
+    SDL_QueryTexture(text->texture, NULL, NULL, &x2, &y2);
+    text->rect.x = x;
+    text->rect.y = y;
+    text->rect.w = x2;
+    text->rect.h = y2;
+    SDL_RenderCopy(renderer, text->texture, NULL, &text->rect);
 }
 
 void SDL_FreeText(SDL_Text* Text){

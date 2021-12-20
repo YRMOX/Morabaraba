@@ -143,6 +143,7 @@ Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber)
     temp->winner = 0;
     SDL_SetRect(&temp->gridRect, 0, 0, renderH, renderH);
     SDL_SetRect(&temp->guiRect, renderH, 0, renderW-renderH, renderH);
+    temp->gui = CreateGui(temp);
     return temp;
 }
 
@@ -236,11 +237,6 @@ void KillCow(Morabaraba* morabaraba, int x, int y){
     morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
 }
 
-void SDL_DrawGui(Morabaraba* morabaraba){
-    SDL_SetRenderDrawColor(morabaraba->renderer, 0, 0, 0, 0);
-    SDL_RenderFillRect(morabaraba->renderer, &morabaraba->guiRect);
-}
-
 void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked){
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
@@ -318,7 +314,7 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
     SDL_DrawAllNeighbor(morabaraba);
     SDL_DrawAllMill(morabaraba);
     SDL_DrawAllCow(morabaraba, mouse);
-    SDL_DrawGui(morabaraba);
+    SDL_UpdateGui(morabaraba);
 }
 
 void FreeMorabaraba(Morabaraba* morabaraba){

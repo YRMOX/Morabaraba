@@ -13,6 +13,9 @@ struct SDL_Mouse{
 
 typedef struct SDL_Text SDL_Text;
 struct SDL_Text{
+    char* text;
+    TTF_Font* font;
+    SDL_Color color;
     SDL_Surface *surface;
     SDL_Texture *texture;
     SDL_Rect rect;
@@ -32,6 +35,7 @@ void SDL_UpdateMouse(SDL_Mouse* mouse);
 
 //SDL_Text
 SDL_Text* SDL_CreateText(SDL_Renderer *renderer, int x, int y, TTF_Font *font, char* text, SDL_Color color);
+void SDL_UpdateText(SDL_Renderer *renderer, SDL_Text* text, int x, int y);
 void SDL_FreeText(SDL_Text* Text);
 
 //SDL_Button
