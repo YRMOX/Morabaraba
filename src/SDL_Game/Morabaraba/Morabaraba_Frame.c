@@ -94,9 +94,13 @@ bool IsInNeighbor(int x, int y, Frame* frame){
     return false;
 }
 
-void SDL_UpdateFrame(Frame *frame, SDL_Mouse* mouse){
+void SDL_UpdateFrame(Morabaraba* morabaraba, Frame *frame, SDL_Mouse* mouse){
     int renderW, renderH;
     SDL_GetRendererOutputSize(frame->renderer, &renderW, &renderH);
+    frame->rect.x = renderW/morabaraba->size*frame->x;
+    frame->rect.y = renderH/morabaraba->size*frame->y;
+    frame->rect.w = renderW/morabaraba->size;
+    frame->rect.h = renderH/morabaraba->size;
     frame->isSelected = false;
     if((mouse->x >= frame->rect.x) && (mouse->x <= frame->rect.x+frame->rect.w) && (mouse->y >= frame->rect.y) && (mouse->y <= frame->rect.y+frame->rect.h)){
             if(mouse->click == SDL_BUTTON_LMASK) {
@@ -111,7 +115,7 @@ void SDL_UpdateAllFrame(Morabaraba* morabaraba, SDL_Mouse* mouse){
     for(int j=0; j<morabaraba->size; j++){
         for(int i=0; i<morabaraba->size; i++){
             if(morabaraba->array[i][j] != NULL){
-                SDL_UpdateFrame(morabaraba->array[i][j], mouse);
+                SDL_UpdateFrame(morabaraba, morabaraba->array[i][j], mouse);
             }
         }
     }

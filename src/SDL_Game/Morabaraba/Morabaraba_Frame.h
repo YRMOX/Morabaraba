@@ -35,7 +35,7 @@ void AppendNeighbor(Frame* frame, Frame* frameToAppend);
 bool IsInNeighbor(int x, int y, Frame* frame);
 
 //SDL
-void SDL_UpdateFrame(Frame *frame, SDL_Mouse* mouse);
+void SDL_UpdateFrame(Morabaraba* morabaraba, Frame *frame, SDL_Mouse* mouse);
 void SDL_UpdateAllFrame(Morabaraba* morabaraba, SDL_Mouse* mouse);
 
 #endif
