@@ -95,12 +95,13 @@ bool IsInNeighbor(int x, int y, Frame* frame){
 }
 
 void SDL_UpdateFrame(Morabaraba* morabaraba, Frame *frame, SDL_Mouse* mouse){
-    int renderW, renderH;
-    SDL_GetRendererOutputSize(frame->renderer, &renderW, &renderH);
-    frame->rect.x = renderW/morabaraba->size*frame->x;
-    frame->rect.y = renderH/morabaraba->size*frame->y;
-    frame->rect.w = renderW/morabaraba->size;
-    frame->rect.h = renderH/morabaraba->size;
+    int gridSize = morabaraba->size;
+    SDL_Rect gridRect = morabaraba->gridRect;
+    SDL_SetRect(&frame->rect,
+                gridRect.w/gridSize*frame->x,
+                gridRect.h/gridSize*frame->y,
+                gridRect.w/gridSize,
+                gridRect.h/gridSize);
     frame->isSelected = false;
     if((mouse->x >= frame->rect.x) && (mouse->x <= frame->rect.x+frame->rect.w) && (mouse->y >= frame->rect.y) && (mouse->y <= frame->rect.y+frame->rect.h)){
             if(mouse->click == SDL_BUTTON_LMASK) {
@@ -108,7 +109,7 @@ void SDL_UpdateFrame(Morabaraba* morabaraba, Frame *frame, SDL_Mouse* mouse){
             }
     }
     SDL_SetRenderDrawColor(frame->renderer, 0, 0, 0, 0);
-    SDL_RenderFillCircle(frame->renderer, renderW/7*frame->x+renderW/14, renderH/7*frame->y+renderH/14, 0.25);
+    SDL_RenderFillCircle(frame->renderer, frame->rect.x+gridRect.w/gridSize/2, frame->rect.y+gridRect.h/gridSize/2, gridRect.w/gridSize*0.25);
 }
 
 void SDL_UpdateAllFrame(Morabaraba* morabaraba, SDL_Mouse* mouse){

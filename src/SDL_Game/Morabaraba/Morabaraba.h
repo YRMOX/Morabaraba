@@ -20,6 +20,8 @@ struct Morabaraba{
     Mill** mills;
     Player** players;
     #ifdef MORABARABA_SDL_H
+    SDL_Rect gridRect;
+    SDL_Rect guiRect;
     SDL_Renderer* renderer;
     #endif
 };

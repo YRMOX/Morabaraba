@@ -96,15 +96,15 @@ void SetAllNeighbor(Morabaraba* morabaraba){
 }
 
 void SDL_DrawNeighbor(Morabaraba* morabaraba, int x, int y){
-    int renderW, renderH;
-    SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
+    int gridSize = morabaraba->size;
+    SDL_Rect gridRect = morabaraba->gridRect;
     int k = 0;
     while((morabaraba->array[x][y]->neighbor[k] != NULL)&&(k<MAX_NEIGHBOR)){
         SDL_RenderDrawLine(morabaraba->renderer,
-                            renderW/7*morabaraba->array[x][y]->x+renderW/14,
-                            renderH/7*morabaraba->array[x][y]->y+renderH/14,
-                            renderW/7*morabaraba->array[x][y]->neighbor[k]->x+renderW/14,
-                            renderH/7*morabaraba->array[x][y]->neighbor[k]->y+renderH/14);
+                            gridRect.w/gridSize*morabaraba->array[x][y]->x+gridRect.w/gridSize/2,
+                            gridRect.h/gridSize*morabaraba->array[x][y]->y+gridRect.h/gridSize/2,
+                            gridRect.w/gridSize*morabaraba->array[x][y]->neighbor[k]->x+gridRect.w/gridSize/2,
+                            gridRect.h/gridSize*morabaraba->array[x][y]->neighbor[k]->y+gridRect.h/gridSize/2);
         k++;
     }
 }
@@ -120,6 +120,8 @@ void SDL_DrawAllNeighbor(Morabaraba* morabaraba){
 }
 
 Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber){
+    int renderW, renderH;
+    SDL_GetRendererOutputSize(renderer, &renderW, &renderH);
     Morabaraba* temp = malloc(sizeof(Morabaraba));
     temp->size = size;
     temp->playerNumber = playerNumber;
@@ -139,6 +141,8 @@ Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber)
     temp->actualPlayer = 1;
     temp->countDown = 10;
     temp->winner = 0;
+    SDL_SetRect(&temp->gridRect, 0, 0, renderH, renderH);
+    SDL_SetRect(&temp->guiRect, renderH, 0, renderW-renderH, renderH);
     return temp;
 }
 
@@ -165,10 +169,10 @@ bool SetCow(Morabaraba* morabaraba,int x, int y){
 }
 
 void SDL_DrawAllCow(Morabaraba* morabaraba, SDL_Mouse* mouse){
-    int renderW, renderH;
-    SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
-    for(int j=0; j<morabaraba->size; j++){
-        for(int i=0; i<morabaraba->size; i++){
+    int gridSize = morabaraba->size;
+    SDL_Rect gridRect = morabaraba->gridRect;
+    for(int j=0; j<gridSize; j++){
+        for(int i=0; i<gridSize; i++){
             if(morabaraba->array[i][j] != NULL){
                 int x, y;
                 if(morabaraba->array[i][j]->value == 1){
@@ -180,11 +184,11 @@ void SDL_DrawAllCow(Morabaraba* morabaraba, SDL_Mouse* mouse){
                     if(morabaraba->array[i][j]->isMoving){
                         x = mouse->x;
                         y = mouse->y;
-                        SDL_RenderFillCircle(morabaraba->renderer, x, y, 0.25);
+                        SDL_RenderFillCircle(morabaraba->renderer, x, y, gridRect.w/gridSize*0.25);
                     }else{
-                        x = renderW/morabaraba->size*i+renderW/(2*morabaraba->size);
-                        y = renderH/morabaraba->size*j+renderH/(2*morabaraba->size);
-                        SDL_RenderFillCircle(morabaraba->renderer, x, y, 0.2);
+                        x = gridRect.w/gridSize*i+gridRect.w/gridSize/2;
+                        y = gridRect.h/gridSize*j+gridRect.h/gridSize/2;
+                        SDL_RenderFillCircle(morabaraba->renderer, x, y, gridRect.w/gridSize*0.2);
                     }
                 }
             }
@@ -206,14 +210,14 @@ void PrintMorabaraba(Morabaraba* morabaraba){
 }
 
 void SDL_DrawMill(Morabaraba* morabaraba, Mill* mill){
-    int renderW, renderH;
-    SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
+    int gridSize = morabaraba->size;
+    SDL_Rect gridRect = morabaraba->gridRect;
     for(int i=0; i<MILLSIZE; i++){
         if(mill->frames[i] != NULL){
-            int x = renderW/morabaraba->size*mill->frames[i]->x+renderW/(2*morabaraba->size);
-            int y = renderH/morabaraba->size*mill->frames[i]->y+renderH/(2*morabaraba->size);
+            int x = gridRect.w/gridSize*mill->frames[i]->x+gridRect.w/gridSize/2;
+            int y = gridRect.h/gridSize*mill->frames[i]->y+gridRect.h/gridSize/2;
             SDL_SetRenderDrawColor(morabaraba->renderer, 255, 0, 0, 255);
-            SDL_RenderFillCircle(morabaraba->renderer, x, y, 0.25);
+            SDL_RenderFillCircle(morabaraba->renderer, x, y, gridRect.w/gridSize*0.25);
         }
     }
 }
@@ -232,9 +236,16 @@ void KillCow(Morabaraba* morabaraba, int x, int y){
     morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
 }
 
+void SDL_DrawGui(Morabaraba* morabaraba){
+    SDL_SetRenderDrawColor(morabaraba->renderer, 0, 0, 0, 0);
+    SDL_RenderFillRect(morabaraba->renderer, &morabaraba->guiRect);
+}
+
 void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked){
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
+    SDL_SetRect(&morabaraba->gridRect, 0, 0, renderH, renderH);
+    SDL_SetRect(&morabaraba->guiRect, renderH, 0, renderW-renderH, renderH);
     SDL_UpdateAllFrame(morabaraba, mouse);
     for(int j=0; j<morabaraba->size; j++){
         for(int i=0; i<morabaraba->size; i++){
@@ -307,6 +318,7 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
     SDL_DrawAllNeighbor(morabaraba);
     SDL_DrawAllMill(morabaraba);
     SDL_DrawAllCow(morabaraba, mouse);
+    SDL_DrawGui(morabaraba);
 }
 
 void FreeMorabaraba(Morabaraba* morabaraba){

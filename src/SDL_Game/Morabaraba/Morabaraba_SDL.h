@@ -40,6 +40,9 @@ void SDL_UpdateButton(SDL_Renderer* renderer, SDL_Button* button, SDL_Mouse* mou
 void SDL_FreeButton(SDL_Button* button);
 
 //SDL_Circle
-void SDL_RenderFillCircle(SDL_Renderer* renderer, int x, int y, float radius);
+void SDL_RenderFillCircle(SDL_Renderer* renderer, int x, int y, int radius);
+
+//SDL_Rect
+void SDL_SetRect(SDL_Rect* rect, int x, int y, int w, int h);
 
 #endif

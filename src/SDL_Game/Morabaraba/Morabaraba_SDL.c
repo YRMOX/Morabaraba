@@ -55,10 +55,7 @@ void SDL_FreeButton(SDL_Button* button){
     free(button);
 }
 
-void SDL_RenderFillCircle(SDL_Renderer* renderer, int x, int y, float radius){
-    int renderW, renderH;
-    SDL_GetRendererOutputSize(renderer, &renderW, &renderH);
-    radius = (int)(renderW/7*radius);
+void SDL_RenderFillCircle(SDL_Renderer* renderer, int x, int y, int radius){
     int offsetX, offsetY, d;
     offsetX = 0;
     offsetY = radius;
@@ -82,4 +79,11 @@ void SDL_RenderFillCircle(SDL_Renderer* renderer, int x, int y, float radius){
             offsetX += 1;
         }
     }
+}
+
+void SDL_SetRect(SDL_Rect* rect, int x, int y, int w, int h){
+    rect->x = x;
+    rect->y = y;
+    rect->w = w;
+    rect->h = h;
 }
