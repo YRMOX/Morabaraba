@@ -8,6 +8,7 @@ typedef struct Gui Gui;
 struct Gui{
     SDL_Text* actualPlayer;
     SDL_Text** cowInHand;
+    SDL_Text** cowTotalNumber;
 };
 
 Gui* CreateGui(Morabaraba* morabaraba);

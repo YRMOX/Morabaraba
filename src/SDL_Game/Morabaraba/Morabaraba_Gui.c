@@ -69,8 +69,14 @@ Gui* CreateGui(Morabaraba* morabaraba){
     y = gui->actualPlayer->rect.y+gui->actualPlayer->rect.h;
     for(int i=0; i<morabaraba->playerNumber; i++){
         gui->cowInHand[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur 0 a 0 vache dans sa main"), white);
+        y = gui->cowInHand[i]->rect.y+gui->cowInHand[i]->rect.h;
+
+    }
+    gui->cowTotalNumber = malloc(sizeof(SDL_Text*)*morabaraba->playerNumber);
+    for(int i=0; i<morabaraba->playerNumber; i++){
+        gui->cowTotalNumber[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur 0 a 0 vache aux total"), white);
         if(i<=morabaraba->playerNumber){
-            y = gui->cowInHand[i]->rect.y+gui->cowInHand[i]->rect.h;
+            y = gui->cowTotalNumber[i]->rect.y+gui->cowTotalNumber[i]->rect.h;
         }
     }
     return gui;
@@ -88,8 +94,15 @@ void SDL_UpdateGui(Morabaraba* morabaraba){
         ReplaceInString(&morabaraba->gui->cowInHand[i]->text,
                         NumberToString(morabaraba->players[i]->cowInHand), 15);
         SDL_UpdateText(morabaraba->renderer, morabaraba->gui->cowInHand[i], x, y);
+        y = morabaraba->gui->cowInHand[i]->rect.y+morabaraba->gui->cowInHand[i]->rect.h;
+    }
+    for(int i=0; i<morabaraba->playerNumber; i++){
+        morabaraba->gui->cowTotalNumber[i]->text[11] = i + 1 + '0';
+        ReplaceInString(&morabaraba->gui->cowTotalNumber[i]->text,
+                        NumberToString(morabaraba->players[i]->cowTotalNumber), 15);
+        SDL_UpdateText(morabaraba->renderer, morabaraba->gui->cowTotalNumber[i], x, y);
         if(i<=morabaraba->playerNumber){
-            y = morabaraba->gui->cowInHand[i]->rect.y+morabaraba->gui->cowInHand[i]->rect.h;
+            y = morabaraba->gui->cowTotalNumber[i]->rect.y+morabaraba->gui->cowTotalNumber[i]->rect.h;
         }
     }
 }
