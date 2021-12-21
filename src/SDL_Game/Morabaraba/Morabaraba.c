@@ -1,6 +1,7 @@
 #include "Morabaraba.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void IncOrDec(int* i, int* j, int axis){
     switch (axis)
@@ -237,6 +238,13 @@ void KillCow(Morabaraba* morabaraba, int x, int y){
     morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
 }
 
+void RandowWinner(Morabaraba* morabaraba){
+    srand(time(0));
+    int random = rand();
+    printf("%i", random);
+    morabaraba->winner = random%morabaraba->playerNumber+1;
+}
+
 void CheckWinner(Morabaraba* morabaraba){
     for(int i=0; i<morabaraba->playerNumber; i++){
         if(morabaraba->players[i]->cowTotalNumber<3){
@@ -299,6 +307,12 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                             if(morabaraba->array[x][y]->value == 0){
                                 bool flying = morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber<=3;
                                 if(MoveCow(morabaraba, i, j, x, y, flying)){
+                                    bool temp = true;
+                                    for(int k=0; k<morabaraba->playerNumber; k++){
+                                        if(morabaraba->players[k]->cowTotalNumber<3) temp = false;
+                                    }
+                                    if(temp) morabaraba->countDown--;
+                                    if(morabaraba->countDown <= 0) RandowWinner(morabaraba);
                                     SwitchPlayer(&morabaraba->actualPlayer, morabaraba->playerNumber);
                                 }
                             }
