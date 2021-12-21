@@ -4,7 +4,9 @@
         "morabaraba.h": "c",
         "morabaraba_frame.h": "c",
         "morabaraba_sdl.h": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "close_code.h": "c",
+        "sdl_main.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

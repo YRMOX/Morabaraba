@@ -1,6 +1,9 @@
 #ifndef MORABARABA_FRAME_H
 #define MORABARABA_FRAME_H
 
+/**
+ * @brief structure de chaque case du Morabaraba
+ */
 typedef struct Frame Frame;
 #include "Morabaraba.h"
 #include "Morabaraba_SDL.h"
@@ -19,7 +22,24 @@ struct Frame{
     SDL_Renderer* renderer;
 };
 
+/**
+ * @brief Crée une case et initialise les valeurs et la position de la case dans
+ * la grille
+ * 
+ * @param morabaraba structure morabaraba pour l'affichage
+ * @param x position x de la case dans la grille
+ * @param y position y de la case dans la grille
+ * @return Adresse de la case après allocation et initialisation
+ */
 Frame* CreateFrame(Morabaraba* morabaraba, int x, int y);
+
+/**
+ * @brief Recherche une Case dans un tableau de Case et renvoie sa position
+ * 
+ * @param frame Case à recherché
+ * @param frames tableau de case dans lequel chercher
+ * @return position de la case dans le tableau
+ */
 int IndexInFrames(Frame* frame, Frame** frames);
 void FreeFrame(Frame* frame);
 
