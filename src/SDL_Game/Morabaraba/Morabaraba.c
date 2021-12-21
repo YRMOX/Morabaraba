@@ -273,12 +273,13 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
                 }
                 if(morabaraba->array[i][j]->isMoving){
                     if(mouse->click != SDL_BUTTON_LMASK){
-                        int x = mouse->x/(renderW/7), y = mouse->y/(renderH/7);
+                        int x, y;
+                        x = mouse->x/(morabaraba->gridRect.w/morabaraba->size);
+                        y = mouse->y/(morabaraba->gridRect.h/morabaraba->size);
                         morabaraba->array[i][j]->isMoving = false;
                         if(morabaraba->array[x][y] != NULL){
                             if(morabaraba->array[x][y]->value == 0){
                                 bool flying = morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber<=3;
-                                printf("%i", morabaraba->players[morabaraba->actualPlayer-1]->cowTotalNumber);
                                 if(MoveCow(morabaraba, i, j, x, y, flying)){
                                     SwitchPlayer(&morabaraba->actualPlayer, morabaraba->playerNumber);
                                 }

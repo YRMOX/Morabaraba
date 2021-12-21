@@ -4,7 +4,6 @@
 
 char* CreateString(char* string){
     int len = strlen(string);
-    printf("%c", string[len]);
     char* temp = malloc(len+1);
     for(int i=0; i<len; i++){
         temp[i] = string[i];
@@ -14,6 +13,7 @@ char* CreateString(char* string){
 }
 
 int NumberLen(int number){
+    if(number == 0) return 1;
     int len = 0;
     while(number != 0){
         number /= 10;
@@ -21,7 +21,6 @@ int NumberLen(int number){
     }
     return len;
 }
-
 
 char* NumberToString(int number){
     int len = NumberLen(number);
@@ -34,21 +33,6 @@ char* NumberToString(int number){
     return string;
 }
 
-void ReplaceInString(char** dest, char* toAppend, int position){
-    int len = strlen(*dest)+strlen(toAppend)-1;
-    char* string = malloc(len+1);
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    while(j < position){ string[i] = (*dest)[j]; i++; j++;}
-    while(k < strlen(toAppend)){ string[i] = toAppend[k]; i++; k++;}
-    while((*dest)[j]!=' ') j++;
-    while(i < len){ string[i] = (*dest)[j]; i++; j++;}
-    string[len] = '\0';
-    free(*dest);
-    *dest = string;
-}
-
 int IndexInString(char character, char* string){
     for(int i=0; i<strlen(string); i++){
         if(string[i] == character){
@@ -58,23 +42,54 @@ int IndexInString(char character, char* string){
     return -1;
 }
 
+int StringInString(char* string, char* toFound){
+    for(int i=0; i<strlen(string); i++){
+        bool temp = true;
+        for(int j=0; j<strlen(toFound); j++){
+            if(string[i+j]!=toFound[j]){
+                temp = false;
+            }
+        }
+        if(temp){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void ReplaceInString(char** dest, char* thatReplace, char* toReplace){
+    int thatReplaceLen = strlen(thatReplace);
+    int diff = thatReplaceLen-strlen(toReplace);
+    int len = strlen(*dest)+diff;
+    char* string = malloc(len+1);
+    int position = StringInString(*dest, toReplace);
+    int i;
+    for(i = 0; i<position; i++) string[i] = (*dest)[i];
+    for(int j=0; j<thatReplaceLen; j++) string[i+j] = thatReplace[j];
+    i += thatReplaceLen;
+    for(i; i<len; i++) string[i] = (*dest)[i-diff];
+    string[len] = '\0';
+    free(*dest);
+    *dest = string;
+}
+
 Gui* CreateGui(Morabaraba* morabaraba){
     Gui* gui = malloc(sizeof(Gui));
     TTF_Font* arial = TTF_OpenFont("arial.ttf", 25);
     if(arial==NULL) return NULL;
     SDL_Color white = {255, 255, 255};
     int x = morabaraba->guiRect.x, y = morabaraba->guiRect.y;
-    gui->actualPlayer = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Tour du Joueur 0"), white);
+    gui->actualPlayer = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Tour du Joueur %d"), white);
     gui->cowInHand = malloc(sizeof(SDL_Text*)*morabaraba->playerNumber);
     y = gui->actualPlayer->rect.y+gui->actualPlayer->rect.h;
     for(int i=0; i<morabaraba->playerNumber; i++){
-        gui->cowInHand[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur 0 a 0 vache dans sa main"), white);
+        gui->cowInHand[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur %d a %d vache dans sa main"), white);
         y = gui->cowInHand[i]->rect.y+gui->cowInHand[i]->rect.h;
 
     }
     gui->cowTotalNumber = malloc(sizeof(SDL_Text*)*morabaraba->playerNumber);
     for(int i=0; i<morabaraba->playerNumber; i++){
-        gui->cowTotalNumber[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur 0 a 0 vache aux total"), white);
+        gui->cowTotalNumber[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur %d a %d vache aux total"), white);
         if(i<=morabaraba->playerNumber){
             y = gui->cowTotalNumber[i]->rect.y+gui->cowTotalNumber[i]->rect.h;
         }
@@ -86,20 +101,29 @@ void SDL_UpdateGui(Morabaraba* morabaraba){
     SDL_SetRenderDrawColor(morabaraba->renderer, 0, 0, 0, 0);
     SDL_RenderFillRect(morabaraba->renderer, &morabaraba->guiRect);
     int x = morabaraba->guiRect.x, y = morabaraba->guiRect.y;
-    morabaraba->gui->actualPlayer->text[16] = morabaraba->actualPlayer+'0';
+    free(morabaraba->gui->actualPlayer->text);
+    morabaraba->gui->actualPlayer->text = CreateString(" Tour du Joueur %d");
+    ReplaceInString(&morabaraba->gui->actualPlayer->text,
+                    NumberToString(morabaraba->actualPlayer), "%d");
     SDL_UpdateText(morabaraba->renderer, morabaraba->gui->actualPlayer, x, y);
     y = morabaraba->gui->actualPlayer->rect.y+morabaraba->gui->actualPlayer->rect.h;
     for(int i=0; i<morabaraba->playerNumber; i++){
-        morabaraba->gui->cowInHand[i]->text[11] = i + 1 + '0';
+        free(morabaraba->gui->cowInHand[i]->text);
+        morabaraba->gui->cowInHand[i]->text = CreateString(" Le joueur %d a %d vache dans sa main");
         ReplaceInString(&morabaraba->gui->cowInHand[i]->text,
-                        NumberToString(morabaraba->players[i]->cowInHand), 15);
+                        NumberToString(i+1), "%d");
+        ReplaceInString(&morabaraba->gui->cowInHand[i]->text,
+                        NumberToString(morabaraba->players[i]->cowInHand), "%d");
         SDL_UpdateText(morabaraba->renderer, morabaraba->gui->cowInHand[i], x, y);
         y = morabaraba->gui->cowInHand[i]->rect.y+morabaraba->gui->cowInHand[i]->rect.h;
     }
     for(int i=0; i<morabaraba->playerNumber; i++){
-        morabaraba->gui->cowTotalNumber[i]->text[11] = i + 1 + '0';
+        free(morabaraba->gui->cowTotalNumber[i]->text);
+        morabaraba->gui->cowTotalNumber[i]->text = CreateString(" Le joueur %d a %d vache aux total");
         ReplaceInString(&morabaraba->gui->cowTotalNumber[i]->text,
-                        NumberToString(morabaraba->players[i]->cowTotalNumber), 15);
+                        NumberToString(i+1), "%d");
+        ReplaceInString(&morabaraba->gui->cowTotalNumber[i]->text,
+                        NumberToString(morabaraba->players[i]->cowTotalNumber), "%d");
         SDL_UpdateText(morabaraba->renderer, morabaraba->gui->cowTotalNumber[i], x, y);
         if(i<=morabaraba->playerNumber){
             y = morabaraba->gui->cowTotalNumber[i]->rect.y+morabaraba->gui->cowTotalNumber[i]->rect.h;
