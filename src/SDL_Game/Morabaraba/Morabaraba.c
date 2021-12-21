@@ -237,7 +237,25 @@ void KillCow(Morabaraba* morabaraba, int x, int y){
     morabaraba->players[morabaraba->actualPlayer-1]->isKiller = false;
 }
 
+void CheckWinner(Morabaraba* morabaraba){
+    for(int i=0; i<morabaraba->playerNumber; i++){
+        if(morabaraba->players[i]->cowTotalNumber<3){
+            int bestCowNumber = 0;
+            for(int j=0; j<morabaraba->playerNumber; j++){
+                if(bestCowNumber<=morabaraba->players[j]->cowTotalNumber){
+                    bestCowNumber = morabaraba->players[j]->cowTotalNumber;
+                    morabaraba->winner = j+1;
+                }
+            }
+        }
+    }
+}
+
 void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked){
+    if(morabaraba->winner != 0){
+        SDL_UpdateGui(morabaraba);
+        return;
+    }
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
     SDL_SetRect(&morabaraba->gridRect, 0, 0, renderH, renderH);
@@ -312,6 +330,7 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked
             }
         }
     }
+    CheckWinner(morabaraba);
     SDL_DrawAllNeighbor(morabaraba);
     SDL_DrawAllMill(morabaraba);
     SDL_DrawAllCow(morabaraba, mouse);

@@ -9,6 +9,7 @@ struct Gui{
     SDL_Text* actualPlayer;
     SDL_Text** cowInHand;
     SDL_Text** cowTotalNumber;
+    SDL_Text* EndText;
 };
 
 Gui* CreateGui(Morabaraba* morabaraba);
