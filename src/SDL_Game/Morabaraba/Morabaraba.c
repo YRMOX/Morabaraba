@@ -127,7 +127,7 @@ Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber)
     temp->size = size;
     temp->playerNumber = playerNumber;
     temp->renderer = renderer;
-    temp->array = CreateFrameArray(temp, size);
+    temp->array = CreateFrameArray(size);
     for(int i=0; i<size; i++){
         if(i != (size-1)/2){
             temp->array[i][i] = CreateFrame(temp, i, i);

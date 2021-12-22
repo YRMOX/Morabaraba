@@ -37,7 +37,7 @@ void FreeFrames(Frame** frames, int size){
     free(frames);
 }
 
-Frame*** CreateFrameArray(Morabaraba* morabaraba, int size){
+Frame*** CreateFrameArray(int size){
     Frame*** array = malloc(sizeof(Frame**)*size);
     for(int i=0; i<size; i++){
         array[i] = malloc(sizeof(Frame*)*size);
