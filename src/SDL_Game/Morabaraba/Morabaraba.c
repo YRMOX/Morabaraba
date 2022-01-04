@@ -227,7 +227,9 @@ void SDL_DrawMill(Morabaraba* morabaraba, Mill* mill){
 void SDL_DrawAllMill(Morabaraba* morabaraba){
     for(int i=0; i<MAX_MILL; i++){
         if(morabaraba->mills[i] != NULL){
-            SDL_DrawMill(morabaraba, morabaraba->mills[i]);
+            if(!morabaraba->mills[i]->isBreaked){
+                SDL_DrawMill(morabaraba, morabaraba->mills[i]);
+            }
         }
     }
 }
@@ -367,7 +369,9 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse){
                 if(mill != NULL){
                     int k = IndexInMills(mill, morabaraba->mills);
                     if(k != -1){
-                        CopyMill(morabaraba->mills[k], mill);
+                        if(!morabaraba->mills[k]->isBreaked){
+                            CopyMill(morabaraba->mills[k], mill);
+                        }
                     }else{
                         int l = 0;
                         while((l<MAX_MILL)&&(morabaraba->mills[l]->frames[0] != NULL)) l++;
@@ -378,8 +382,12 @@ void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse){
                     FreeMill(mill);
                 }else{
                     for(int k=0; k<MAX_MILL; k++){
-                        if(!CheckMill(morabaraba->mills[k])){
-                            DestructMill(morabaraba->mills[k]);
+                        Mill* currentMill = morabaraba->mills[k];
+                        if(!CheckMill(currentMill)){
+                            BreakMill(currentMill);
+                            if(currentMill->isBreaked&&(currentMill->frames[0]->value == *actualPlayer)){
+                                DestructMill(currentMill);
+                            }
                         }
                     }
                 }

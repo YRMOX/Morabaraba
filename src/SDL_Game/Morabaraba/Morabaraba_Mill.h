@@ -13,6 +13,7 @@ typedef struct Mill Mill;
 
 struct Mill{
     Frame** frames;
+    bool isBreaked;
 };
 
 /**
@@ -59,6 +60,13 @@ void CopyMill(Mill* millA, Mill* millB);
  * @return faux si les moulins sont différents
  */
 bool CmpMill(Mill* millA, Mill* millB);
+
+/**
+ * @brief prédestruction d'une moulin
+ * 
+ * @param mill moulin à marqué comme à détruire
+ */
+void BreakMill(Mill* mill);
 
 /**
  * @brief détruit une moulin

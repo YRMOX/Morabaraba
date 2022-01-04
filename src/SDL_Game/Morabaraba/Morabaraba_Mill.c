@@ -4,6 +4,7 @@
 Mill* CreateMill(){
     Mill* temp = malloc(sizeof(Mill));
     temp->frames = CreateFrames(MILLSIZE);
+    temp->isBreaked = false;
     return temp;
 }
 
@@ -62,11 +63,19 @@ bool CmpMill(Mill* millA, Mill* millB){
     return temp;
 }
 
+void BreakMill(Mill* mill){
+    for(int i=0; i<MILLSIZE; i++){
+        mill->frames[i]->isProtected = false;
+    }
+    mill->isBreaked = true;
+}
+
 void DestructMill(Mill* mill){
     for(int i=0; i<MILLSIZE; i++){
         mill->frames[i]->isProtected = false;
         mill->frames[i]=NULL;
     }
+    mill->isBreaked = false;
 }
 
 void FreeMill(Mill* mill){
