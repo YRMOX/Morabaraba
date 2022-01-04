@@ -61,6 +61,13 @@ void CopyMill(Mill* millA, Mill* millB);
 bool CmpMill(Mill* millA, Mill* millB);
 
 /**
+ * @brief détruit une moulin
+ * 
+ * @param mill Moulin à détruire
+ */
+void DestructMill(Mill* mill);
+
+/**
  * @brief libère la mémoire occupé par un Moulin
  * 
  * @param mill Moulin à désallouer

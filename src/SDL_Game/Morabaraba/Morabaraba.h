@@ -13,6 +13,7 @@ typedef struct Morabaraba Morabaraba;
 #include <stdbool.h>
 
 #define MAX_MILL 20
+#define END_GAME_VALUE 2
 
 struct Morabaraba{
     int size;
@@ -23,12 +24,10 @@ struct Morabaraba{
     Frame*** array;
     Mill** mills;
     Player** players;
-    #ifdef MORABARABA_SDL_H
     SDL_Rect gridRect;
     SDL_Rect guiRect;
     Gui* gui;
     SDL_Renderer* renderer;
-    #endif
 };
 
 /**
@@ -40,7 +39,14 @@ struct Morabaraba{
  * @return Adresse de la structure Morabaraba
  */
 Morabaraba* CreateMorabaraba(SDL_Renderer* renderer, int size, int playerNumber);
-void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse, bool clicked);
+
+/**
+ * @brief mise à jour du jeu
+ * 
+ * @param morabaraba structure morabaraba contenant toutes les données du jeu
+ * @param mouse information de la souris
+ */
+void SDL_UpdateMorabaraba(Morabaraba* morabaraba, SDL_Mouse* mouse);
 
 bool MoveCow(Morabaraba* morabaraba, int x1, int y1, int x2, int y2, bool flying);
 bool SetCow(Morabaraba* morabaraba,int x, int y);

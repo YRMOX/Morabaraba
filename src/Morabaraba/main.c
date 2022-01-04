@@ -16,6 +16,7 @@ int main(int argc, char *argv[]){
     strcat(command, currentPath);
     strcat(command, temp);
     strcpy(command2, command);
+    strcat(command2, temp2);
     printf("Choisissez un Mode d'execution:\n\t1) SDL_Game\n\t2) SDL_Game + lastSave\n>>> ");
     int response = 0;
     scanf("%i", &response);

@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#define FLYING_VALUE 3
+
 /**
  * @brief Structure qui contient toutes les valeurs associé au joueur
  */
@@ -33,8 +35,20 @@ Player* CreatePlayer(int id);
 bool PlayerIsOwner(int value, Player* player);
 void FreePlayer(Player* player);
 
+
 Player** CreatePlayers(int playerNumber);
 void SwitchPlayer(int* actualPlayer, int playerNumber);
+
+/**
+ * @brief vérifie que tous les joueurs peuve voler
+ * 
+ * @param players tableau des joueurs
+ * @param playerNumber nombre de joueur dans le tableau
+ * 
+ * @return vrai si tous les joueurs peuvent voler
+ * @return faux si un joueurs ne peut pas voler
+ */
+bool AllPlayerCanFly(Player** players, int playerNumber);
 void FreePlayers(Player** players, int playerNumber);
 
 #endif

@@ -34,10 +34,8 @@ int main(int argc, char *argv[]){
             SaveMorabaraba(morabaraba, currentDir);
             launched = false;
         }
-        SDL_UpdateMorabaraba(morabaraba, &mouse, clicked);
-        if(mouse.click == SDL_BUTTON_LMASK){
-            clicked = true;
-        }else clicked = false;
+        SDL_UpdateMorabaraba(morabaraba, &mouse);
+        SDL_UpdateMouseBuffer(&mouse);
         SDL_RenderPresent(renderer);
     }
     FreeMorabaraba(morabaraba);

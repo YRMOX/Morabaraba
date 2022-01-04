@@ -14,8 +14,8 @@ Mill* SearchMill(Frame* middle){
     }
     for(int i=0; (middle->neighbor[i]!=NULL)&&(i<MAX_NEIGHBOR); i++){
         if(middle->neighbor[i]->value == player){
-            int x = middle->neighbor[i]->x-middle->x;
-            int y = middle->neighbor[i]->y-middle->y;
+            int x = middle->neighbor[i]->x - middle->x;
+            int y = middle->neighbor[i]->y - middle->y;
             for(int j=0; (middle->neighbor[j]!=NULL)&&(j<MAX_NEIGHBOR); j++){
                 if(middle->neighbor[j]->value == player){
                     if((middle->neighbor[j]->x == middle->x-x)&&(middle->neighbor[j]->y == middle->y-y)){
@@ -23,6 +23,8 @@ Mill* SearchMill(Frame* middle){
                         temp->frames[0] = middle;
                         temp->frames[1] = middle->neighbor[i];
                         temp->frames[2] = middle->neighbor[j];
+                        for(int i=0; i<MILLSIZE; i++)
+                            temp->frames[i]->isProtected = true;
                         return temp;
                     }
                 }
@@ -58,6 +60,13 @@ bool CmpMill(Mill* millA, Mill* millB){
         }
     }
     return temp;
+}
+
+void DestructMill(Mill* mill){
+    for(int i=0; i<MILLSIZE; i++){
+        mill->frames[i]->isProtected = false;
+        mill->frames[i]=NULL;
+    }
 }
 
 void FreeMill(Mill* mill){

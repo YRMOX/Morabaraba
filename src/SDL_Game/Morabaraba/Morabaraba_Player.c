@@ -32,6 +32,25 @@ void SwitchPlayer(int* actualPlayer, int playerNumber){
     }
 }
 
+/**
+ * @brief vérifie que tous les joueurs peuve voler
+ * 
+ * @param players tableau des joueurs
+ * @param playerNumber nombre de joueur dans le tableau
+ * 
+ * @return vrai si tous les joueurs peuvent voler
+ * @return faux si un joueurs ne peut pas voler
+ */
+bool AllPlayerCanFly(Player** players, int playerNumber){
+    bool temp = true;
+    for(int i=0; i<playerNumber; i++){
+        if(players[i]->cowTotalNumber > FLYING_VALUE){
+            temp = false;
+        }
+    }
+    return temp;
+}
+
 void FreePlayers(Player** players, int playerNumber){
     for(int i=0; i<playerNumber; i++) FreePlayer(players[i]);
     free(players);

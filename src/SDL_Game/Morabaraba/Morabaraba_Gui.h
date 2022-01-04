@@ -9,6 +9,7 @@ typedef struct Gui Gui;
 #include "Morabaraba_SDL.h"
 
 struct Gui{
+    TTF_Font* font;
     SDL_Text* actualPlayer;
     SDL_Text** cowInHand;
     SDL_Text** cowTotalNumber;
@@ -35,8 +36,8 @@ void SDL_UpdateGui(Morabaraba* morabaraba);
 /**
  * @brief Désallocation de la structure Gui
  * 
- * @param gui structure a Désalloué
+ * @param morabaraba structure morabaraba où se trouve le gui
  */
-void FreeGui(Gui* gui);
+void FreeGui(Morabaraba* morabaraba);
 
 #endif

@@ -6,6 +6,10 @@ void SDL_UpdateMouse(SDL_Mouse* mouse){
         mouse->click = SDL_GetMouseState(&mouse->x, &mouse->y);
 }
 
+void SDL_UpdateMouseBuffer(SDL_Mouse* mouse){
+    mouse->clickBuffer = mouse->click;
+}
+
 SDL_Text* SDL_CreateText(SDL_Renderer *renderer, int x, int y, TTF_Font *font, char* text, SDL_Color color){
     SDL_Text* temp_text = malloc(sizeof(SDL_Text));
     temp_text->text = text;
@@ -35,6 +39,7 @@ void SDL_UpdateText(SDL_Renderer *renderer, SDL_Text* text, int x, int y){
 }
 
 void SDL_FreeText(SDL_Text* Text){
+    free(Text->text);
     SDL_FreeSurface(Text->surface);
     SDL_DestroyTexture(Text->texture);
 }

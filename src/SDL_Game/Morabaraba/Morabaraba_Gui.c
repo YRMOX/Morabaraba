@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-char* CreateString(char* string){
+dynamicString CreateString(char* string){
     int len = strlen(string);
-    char* temp = malloc(len+1);
+    dynamicString temp = malloc(len+1);
     for(int i=0; i<len; i++){
         temp[i] = string[i];
     }
@@ -22,9 +22,9 @@ int NumberLen(int number){
     return len;
 }
 
-char* NumberToString(int number){
+dynamicString NumberToString(int number){
     int len = NumberLen(number);
-    char* string = malloc(len+1);
+    dynamicString string = malloc(len+1);
     for(int i=len-1; i>=0; i--){
         string[i] = number % 10 + '0';
         number /= 10;
@@ -57,11 +57,11 @@ int StringInString(char* string, char* toFound){
     return -1;
 }
 
-void ReplaceInString(char** dest, char* thatReplace, char* toReplace){
+void ReplaceInString(dynamicString* dest, char* thatReplace, char* toReplace){
     int thatReplaceLen = strlen(thatReplace);
     int diff = thatReplaceLen-strlen(toReplace);
     int len = strlen(*dest)+diff;
-    char* string = malloc(len+1);
+    dynamicString string = malloc(len+1);
     int position = StringInString(*dest, toReplace);
     int i;
     for(i = 0; i<position; i++) string[i] = (*dest)[i];
@@ -75,29 +75,29 @@ void ReplaceInString(char** dest, char* thatReplace, char* toReplace){
 
 Gui* CreateGui(Morabaraba* morabaraba){
     Gui* gui = malloc(sizeof(Gui));
-    TTF_Font* arial = TTF_OpenFont("arial.ttf", 25);
-    if(arial==NULL) return NULL;
+    gui->font = TTF_OpenFont("arial.ttf", 25);
+    if(gui->font==NULL) return NULL;
     SDL_Color white = {255, 255, 255};
     SDL_Color black = {0, 0, 0};
     int x = morabaraba->guiRect.x, y = morabaraba->guiRect.y;
-    gui->actualPlayer = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Tour du Joueur %d"), white);
+    gui->actualPlayer = SDL_CreateText(morabaraba->renderer, x, y, gui->font, CreateString(" Tour du Joueur %d"), white);
     gui->cowInHand = malloc(sizeof(SDL_Text*)*morabaraba->playerNumber);
     y = gui->actualPlayer->rect.y+gui->actualPlayer->rect.h;
     for(int i=0; i<morabaraba->playerNumber; i++){
-        gui->cowInHand[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur %d a %d vache dans sa main"), white);
+        gui->cowInHand[i] = SDL_CreateText(morabaraba->renderer, x, y, gui->font, CreateString(" Le joueur %d a %d vache dans sa main"), white);
         y = gui->cowInHand[i]->rect.y+gui->cowInHand[i]->rect.h;
 
     }
     gui->cowTotalNumber = malloc(sizeof(SDL_Text*)*morabaraba->playerNumber);
     for(int i=0; i<morabaraba->playerNumber; i++){
-        gui->cowTotalNumber[i] = SDL_CreateText(morabaraba->renderer, x, y, arial, CreateString(" Le joueur %d a %d vache aux total"), white);
+        gui->cowTotalNumber[i] = SDL_CreateText(morabaraba->renderer, x, y, gui->font, CreateString(" Le joueur %d a %d vache aux total"), white);
         if(i<=morabaraba->playerNumber){
             y = gui->cowTotalNumber[i]->rect.y+gui->cowTotalNumber[i]->rect.h;
         }
     }
     int renderW, renderH;
     SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
-    gui->EndText = SDL_CreateText(morabaraba->renderer, renderW/2, renderH/2, arial, CreateString("Le gagnent est le joueur %d"), black);
+    gui->EndText = SDL_CreateText(morabaraba->renderer, renderW/2, renderH/2, gui->font, CreateString("Le gagnant est le joueur %d"), black);
     return gui;
 }
 
@@ -107,7 +107,7 @@ void SDL_UpdateGui(Morabaraba* morabaraba){
         int renderW, renderH;
         SDL_GetRendererOutputSize(morabaraba->renderer, &renderW, &renderH);
         free(morabaraba->gui->EndText->text);
-        morabaraba->gui->EndText->text = CreateString("Le gagnent est le joueur %d");
+        morabaraba->gui->EndText->text = CreateString("Le gagnant est le joueur %d");
         ReplaceInString(&morabaraba->gui->EndText->text, NumberToString(morabaraba->winner), "%d");
         x = renderW/2-morabaraba->gui->EndText->rect.w/2;
         y = renderH/2-morabaraba->gui->EndText->rect.h/2;
@@ -145,4 +145,13 @@ void SDL_UpdateGui(Morabaraba* morabaraba){
             y = morabaraba->gui->cowTotalNumber[i]->rect.y+morabaraba->gui->cowTotalNumber[i]->rect.h;
         }
     }
+}
+
+void FreeGui(Morabaraba* morabaraba){
+    TTF_CloseFont(morabaraba->gui->font);
+    SDL_FreeText(morabaraba->gui->actualPlayer);
+    /*SDL_FreeText(morabaraba->gui->cowInHand); //attention tableaux
+    SDL_FreeText(morabaraba->gui->cowTotalNumber);*/
+    SDL_FreeText(morabaraba->gui->EndText);
+    free(morabaraba->gui);
 }
